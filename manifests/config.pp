@@ -40,9 +40,11 @@ class gitlab_mirrors::config(
   # this is here just to satisfy dependencies and ordering
     file{$system_user_home_dir: }
   }
-  file{"${system_user_home_dir}/.ssh":
-    ensure  => directory,
-    require => File[$system_user_home_dir]
+  if $system_manage_user {
+    file{"${system_user_home_dir}/.ssh":
+      ensure  => directory,
+      require => File[$system_user_home_dir]
+    }
   }
 
 # ssh-keygen for gitmirror user
