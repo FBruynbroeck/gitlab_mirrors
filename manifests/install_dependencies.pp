@@ -35,6 +35,6 @@ class gitlab_mirrors::install_dependencies(
         path    => ['/bin', '/usr/bin']
       }
     }
-    package{'git': ensure => present}
+    realize(Package['git'])
   }
 }
