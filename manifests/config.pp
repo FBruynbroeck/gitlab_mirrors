@@ -5,6 +5,7 @@ class gitlab_mirrors::config(
   $system_mirror_user        = 'gitmirror',
   $system_mirror_group       = 'gitmirror',
   $system_user_home_dir      = '/home/gitmirror',
+  $system_manage_user        = false,
   $mirror_repo               = 'https://github.com/samrocketman/gitlab-mirrors.git',
   $mirror_repo_dir_name      = 'gitlab-mirrors',
   $repositories_dir_name     = 'repositories',
@@ -27,7 +28,7 @@ class gitlab_mirrors::config(
     group => $system_mirror_group
   }
 # in case you happen to be running this as a non-root user, the following code will work
-  if $::id == 'root' {
+  if $::id == 'root' and $system_manage_user {
     user{ $system_mirror_user:
       ensure => present,
     }
