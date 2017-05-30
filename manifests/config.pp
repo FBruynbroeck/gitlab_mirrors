@@ -47,7 +47,7 @@ class gitlab_mirrors::config(
 
 # ssh-keygen for gitmirror user
 # you will then need to add this key to the gitlab account
-  if $ssh_rsa_private_key == undef {
+  if $ssh_rsa_private_key == undef and $system_manage_user {
     exec{ 'generate_key':
       path    => ['/bin', '/usr/bin', '/usr/sbin'],
       user    => $system_mirror_user,
@@ -58,7 +58,7 @@ class gitlab_mirrors::config(
   }
   # if you want to use pregenerated keys, then we can just
   # reuse them here
-  else {
+  elsif $system_manage_user {
     file{"${system_user_home_dir}/.ssh":
       ensure => directory,
     }
@@ -74,11 +74,11 @@ class gitlab_mirrors::config(
       mode    => '0644',
       require => File["${system_user_home_dir}/.ssh"]
     }
-  }
-  file{ "${system_user_home_dir}/.ssh/config":
-    ensure  => file,
-    content => "Host ${gitlab_url}\n\tUser git",
-    require => File["${system_user_home_dir}/.ssh"]
+    file{ "${system_user_home_dir}/.ssh/config":
+      ensure  => file,
+      content => "Host ${gitlab_url}\n\tUser git",
+      require => File["${system_user_home_dir}/.ssh"]
+    }
   }
 
   file{$mirrored_repo_dir:
